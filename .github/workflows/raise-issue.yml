@@ -1,0 +1,18 @@
+name: Raise Issue on Failure
+
+on:
+  workflow_run:
+    workflows: ["Python CI with Logging"]
+    types: [completed]
+
+jobs:
+  raise-issue:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create GitHub Issue
+        uses: peter-evans/create-issue-from-file@v4
+        with:
+          title: "🚨 CI Failure in Python Logging Project"
+          content-filepath: .github/ISSUE_TEMPLATE/failure.md
+          labels: bug, ci
